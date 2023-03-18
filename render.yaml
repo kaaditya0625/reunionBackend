@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: reunionBackend
+    env: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt &&
+      python manage.py migrate
+    startCommand: gunicorn mydjangoapp.wsgi:application --bind 0.0.0.0:${PORT}
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: mydjangoapp.settings.production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:///db.sqlite3
+
+databases:
+  - name: mydjangodb
+    type: sqlite
+    plan: free
